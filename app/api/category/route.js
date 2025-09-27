@@ -1,42 +1,33 @@
-import Category from "@/models/Category";
+// app/api/category/route.js
+import { NextResponse } from 'next/server';
+import Category from '@/models/Category';
+import { connectDB } from '@/lib/db';
 
-export async function GET(request) {
-  // console.log('GET /api/category',request.nextUrl.searchParams.get("pno"))
-  const pno = request.nextUrl.searchParams.get("pno")
-  if (pno) {
-    const size = 3 // TODO fix this hard code
-    const startIndex = (pno - 1) * size
-    const categories = await Category.find()
-      .sort({ order: -1 })
-      .skip(startIndex)
-      .limit(size)
-    return Response.json(categories)
+export const runtime = 'nodejs';
+export const revalidate = 0;
+
+export async function GET() {
+  await connectDB();
+  try {
+    const items = await Category.find({}).lean();
+    const mapped = items.map(c => ({ ...c, id: c._id?.toString?.() ?? c.id }));
+    return NextResponse.json(mapped);
+  } catch (e) {
+    return NextResponse.json({ error: e.message || 'Server error' }, { status: 500 });
   }
-
-  const s = request.nextUrl.searchParams.get("s")
-  if (s) {
-    const categories = await Category
-      .find({ name: { $regex: s, $options: 'i' } })
-      .sort({ order: -1 })
-    return Response.json(categories)
-  }
-
-  const categories = await Category.find().sort({ order: -1 })
-  return Response.json(categories)
 }
 
 export async function POST(request) {
-  const body = await request.json()
-  const category = new Category(body)
-  await category.save()
-  return Response.json(category)
-}
-
-
-
-// for V2
-export async function PUT(request) {
-  const body = await request.json()
-  const category = await Category.findByIdAndUpdate(body._id, body)
-  return Response.json(category)
+  await connectDB();
+  try {
+    const body = await request.json();
+    const doc = await Category.create(body);
+    const created = await Category.findById(doc._id).lean();
+    return NextResponse.json(
+      { ...created, id: created._id?.toString?.() ?? created.id },
+      { status: 201 }
+    );
+  } catch (e) {
+    return NextResponse.json({ error: e.message || 'Server error' }, { status: 500 });
+  }
 }
