@@ -1,19 +1,36 @@
+// app/page.js
+"use client";
 import * as React from "react";
+import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { withBase } from "@/lib/basePath"; 
-import { withBase } from "../../lib/basePath";// adjust path if not using @ alias
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Link from "next/link";
 
-export default function BoxBasic() {
+export default function Home() {
   return (
     <main>
-      <Box component="section" className="border border-gray-800 m-5 text-center">
-        <h1 className="text-3xl text-violet-950">Stock Management v1.0</h1>
-        <ul>
-          <li><a href="/stock/product">Products</a></li>
-          <li><a href="/stock/category">Category</a></li>
-        </ul>
-      </Box>
+      <Container maxWidth="md">
+        <Box sx={{ mt: 6, border: "1px solid", borderColor: "divider", p: 3, borderRadius: 2 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Stock Management v1.0
+          </Typography>
+          <List>
+            <Link href="/stock/product" passHref legacyBehavior>
+              <ListItemButton component="a">
+                <ListItemText primary="Products" />
+              </ListItemButton>
+            </Link>
+            <Link href="/stock/category" passHref legacyBehavior>
+              <ListItemButton component="a">
+                <ListItemText primary="Category" />
+              </ListItemButton>
+            </Link>
+          </List>
+        </Box>
+      </Container>
     </main>
   );
 }

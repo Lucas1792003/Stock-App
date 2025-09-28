@@ -76,7 +76,7 @@ export default function Home() {
 
   return (
     <main>
-      {/* <form onSubmit={handleSubmit(createCategory)}>
+      <form onSubmit={handleSubmit(createCategory)}>
         <div className="grid grid-cols-2 gap-4 w-fit m-4">
           <div>Category:</div>
           <div>
@@ -123,7 +123,7 @@ export default function Home() {
             }
           </div>
         </div>
-      </form> */}
+      </form>
       <div className="mx-4">
         <span>Category ({category.length})</span>
         <IconButton aria-label="new-category" color="secondary" onClick={handleOpen}>
